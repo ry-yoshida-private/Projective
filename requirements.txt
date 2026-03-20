@@ -1,2 +1,2 @@
 numpy
-opencv-contrib-python  # cv2（contrib ビルド）
+opencv-contrib-python
