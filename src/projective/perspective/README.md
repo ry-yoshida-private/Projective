@@ -15,11 +15,9 @@ Image points use **homogeneous 2D** $(x, y, 1)^\top$. Affine: multiply by the 2Ã
 OpenCV-style 2Ã—3 $A$:
 
 $$
-\begin{bmatrix} x' \\ y' \end{bmatrix}
-\sim
+\begin{bmatrix} x' \\ y' \end{bmatrix} =
 A
-\begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
-\sim
+\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} =
 \begin{bmatrix}
 a_{00} & a_{01} & a_{02} \\
 a_{10} & a_{11} & a_{12}
