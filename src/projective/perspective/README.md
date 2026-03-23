@@ -16,10 +16,10 @@ OpenCV-style 2×3 $A$:
 
 $$
 \begin{bmatrix} x' \\ y' \end{bmatrix}
-=
+\sim
 A
 \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
-=
+\sim
 \begin{bmatrix}
 a_{00} & a_{01} & a_{02} \\
 a_{10} & a_{11} & a_{12}
