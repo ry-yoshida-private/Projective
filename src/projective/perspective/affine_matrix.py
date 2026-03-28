@@ -179,12 +179,10 @@ class AffineMatrix(PerspectiveMatrix):
         origin_points = np.asarray(origin_points, dtype=np.float32)
         destination_points = np.asarray(destination_points, dtype=np.float32)
         
-        matrix, mask = cv2.estimateAffinePartial2D(
+        matrix, _ = cv2.estimateAffinePartial2D(
                     from_=origin_points, 
                     to=destination_points, 
                     method=cv2.RANSAC, 
                     ransacReprojThreshold=ransac_th
                     )
-        if mask is None:
-            return cls.create_identity_matrix()
         return cls(value=matrix)

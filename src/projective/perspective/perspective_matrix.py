@@ -82,8 +82,8 @@ class PerspectiveMatrix(ABC):
         a, b = H[0,0], H[0,1] (or A[0,0], A[0,1])
         c, d = H[1,0], H[1,1] (or A[1,0], A[1,1])
         """
-        a, b = self.value[0, :2]
-        c, d = self.value[1, :2]
+        a, _ = self.value[0, :2] # a, b: float
+        c, _ = self.value[1, :2] # c, d: float
         sx = np.hypot(a, c)
         if sx == 0:
             return 0

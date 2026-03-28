@@ -1,6 +1,7 @@
 from __future__ import annotations
 import cv2
 import numpy as np
+from typing import cast
 from dataclasses import dataclass
 
 @dataclass
@@ -53,8 +54,5 @@ class FundamentalMatrix:
         if points1.shape[1] != 2:
             raise ValueError(f"Points arrays must have 2 columns, got {points1.shape[1]}")
         
-        F, mask = cv2.findFundamentalMat(points1, points2, cv2.FM_RANSAC, ransac_th) # type: ignore
-        if F is None:
-            raise ValueError("Failed to estimate fundamental matrix")
-        
+        F, mask = cast(tuple[np.ndarray, np.ndarray], cv2.findFundamentalMat(points1, points2, cv2.FM_RANSAC, ransac_th)) # type: ignore
         return cls(value=F), mask

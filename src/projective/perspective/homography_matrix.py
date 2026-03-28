@@ -4,7 +4,7 @@ import numpy as np
 import warnings
 from dataclasses import dataclass
 from functools import cached_property
-
+from typing import Callable
 from .perspective_matrix import PerspectiveMatrix
 from .method import PerspectiveTransformationMethod
 
@@ -72,7 +72,7 @@ class HomographyMatrix(PerspectiveMatrix):
         matrix = self.inverse if is_inverse else self.value
         transformed = (matrix @ points.T).T
 
-        numerator_getters = {
+        numerator_getters: dict[int, Callable[[np.ndarray], np.ndarray]] = {
             0: lambda arr: arr[:, 1:],
             1: lambda arr: arr[:, (0, 2)],
             2: lambda arr: arr[:, :2],
@@ -142,7 +142,7 @@ class HomographyMatrix(PerspectiveMatrix):
         """
         H_norm = self.value / self.value[2, 2]
         A = H_norm[:2, :2]
-        R, S = np.linalg.qr(A)
+        _, S = np.linalg.qr(A) # R, S: np.ndarray
 
         sx = np.linalg.norm(S[:, 0])
         sy = np.linalg.norm(S[:, 1])
@@ -218,14 +218,12 @@ class HomographyMatrix(PerspectiveMatrix):
         origin_points = np.asarray(origin_points, dtype=np.float32)
         destination_points = np.asarray(destination_points, dtype=np.float32)
         
-        matrix, mask = cv2.findHomography(
+        matrix, _ = cv2.findHomography(
             srcPoints=origin_points, 
             dstPoints=destination_points, 
             method=cv2.RANSAC, 
             ransacReprojThreshold=ransac_th
             ) #matrix: shape(3, 3) np.ndarray , mask: shape(n, 1) np.ndarray(bool)
 
-        if mask is None:
-            return cls.create_identity_matrix()
         return cls(value=matrix)
 

@@ -33,9 +33,7 @@ def register_perspective_matrix(
 
     if matrix is None:
         return target_class.create_identity_matrix()
-    if isinstance(matrix, np.ndarray):
-        return target_class(value=matrix)
-    raise TypeError(f"Unsupported matrix type: {type(matrix)}")
+    return target_class(value=matrix)
 
 def register_perspective_matrix_from_points(
     origin_points: np.ndarray, 
