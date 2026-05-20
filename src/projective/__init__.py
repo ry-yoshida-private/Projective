@@ -8,6 +8,7 @@ from .perspective import (
     PerspectiveTransformationMethod,
     register_perspective_matrix,
 )
+from opencv_utility import OpenCVOutlierFilteringFlag
 
 __all__ = [
     "FundamentalMatrix",
@@ -16,5 +17,6 @@ __all__ = [
     "PerspectiveMatrix", 
     "PerspectiveTransformationMethod", 
     "HomographyMatrix",
-    "AffineMatrix"
+    "AffineMatrix",
+    "OpenCVOutlierFilteringFlag",
     ]

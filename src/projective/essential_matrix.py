@@ -64,9 +64,9 @@ class EssentialMatrix:
             raise ValueError("Intrinsic matrix must be a 3x3 matrix")
 
         E, e_mask = cv2.findEssentialMat(
-            points1,
-            points2,
-            intrinsic_matrix,
+            points1=points1,
+            points2=points2,
+            cameraMatrix=intrinsic_matrix,
             method=outlier_filtering_flag.cv2_flag,
             prob=prob,
             threshold=threshold,
