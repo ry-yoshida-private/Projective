@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from dataclasses import dataclass
 
+from opencv_utility import OpenCVOutlierFilteringFlag
+
 @dataclass(frozen=True)
 class EssentialMatrix:
     """
@@ -26,9 +28,10 @@ class EssentialMatrix:
         points1: np.ndarray,
         points2: np.ndarray,
         intrinsic_matrix: np.ndarray,
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         prob: float = 0.999,
-        threshold: float = 1.0
-        ) -> tuple[EssentialMatrix, np.ndarray]:
+        threshold: float = 1.0,
+    ) -> tuple[EssentialMatrix, np.ndarray]:
         """
         Create an essential matrix from a set of points and an intrinsic matrix.
 
@@ -40,10 +43,12 @@ class EssentialMatrix:
             Points in the second image.
         intrinsic_matrix: np.ndarray
             Intrinsic matrix.
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag
+            Robust estimation method passed to ``cv2.findEssentialMat``.
         prob: float
-            Probability of the essential matrix.
+            Confidence level for RANSAC / LMedS methods.
         threshold: float
-            Threshold of the essential matrix.
+            Maximum distance from a point to an epipolar line (pixels) for RANSAC.
 
         Returns
         -------
@@ -59,12 +64,12 @@ class EssentialMatrix:
             raise ValueError("Intrinsic matrix must be a 3x3 matrix")
 
         E, e_mask = cv2.findEssentialMat(
-            points1, 
-            points2, 
-            intrinsic_matrix, 
-            method=cv2.RANSAC, 
-            prob=prob, 
-            threshold=threshold
-            )
+            points1,
+            points2,
+            intrinsic_matrix,
+            method=outlier_filtering_flag.cv2_flag,
+            prob=prob,
+            threshold=threshold,
+        )
         return cls(value=E), e_mask
 

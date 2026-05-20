@@ -1,8 +1,11 @@
 from __future__ import annotations
 import cv2
 import numpy as np
+import warnings
 from dataclasses import dataclass
+from typing import cast
 
+from opencv_utility import OpenCVOutlierFilteringFlag
 from .perspective_matrix import PerspectiveMatrix
 from .method import PerspectiveTransformationMethod
 
@@ -58,6 +61,10 @@ class AffineMatrix(PerspectiveMatrix):
             points_3d = points
 
         transformed = (self.value @ points_3d.T).T
+
+        if points.shape[1] == 3:
+            w = points_3d[:, 2]
+            transformed = transformed / w[:, np.newaxis]
 
         return transformed
     
@@ -154,10 +161,11 @@ class AffineMatrix(PerspectiveMatrix):
         cls,
         origin_points: np.ndarray, 
         destination_points: np.ndarray, 
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0
-        ) -> AffineMatrix:
+        ) -> tuple[AffineMatrix, np.ndarray]:
         """
-        Create an affine matrix from a set of origin and destination points.
+        Create a partial affine matrix (``cv2.estimateAffinePartial2D``) from point correspondences.
         
         Parameters
         ----------
@@ -165,24 +173,31 @@ class AffineMatrix(PerspectiveMatrix):
             Origin points in homogeneous coordinates (n, 2).
         destination_points : np.ndarray
             Destination points in homogeneous coordinates (n, 2).
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag
+            Outlier filtering flag.
         ransac_th : float
             RANSAC threshold.
 
         Returns
         -------
-        AffineMatrix
-            Affine matrix.
+        tuple[AffineMatrix, np.ndarray]
+            Affine matrix and inlier mask of shape (N, 1).
         """
+        n = len(origin_points)
         if not cls._validate_points(origin_points, destination_points):
-            return cls.create_identity_matrix()
-        
+            warnings.warn("Invalid points for affine matrix creation")
+            return cls.create_identity_matrix(), np.zeros((n, 1), dtype=np.uint8)
+
         origin_points = np.asarray(origin_points, dtype=np.float32)
         destination_points = np.asarray(destination_points, dtype=np.float32)
-        
-        matrix, _ = cv2.estimateAffinePartial2D(
-                    from_=origin_points, 
-                    to=destination_points, 
-                    method=cv2.RANSAC, 
-                    ransacReprojThreshold=ransac_th
-                    )
-        return cls(value=matrix)
+
+        matrix, mask = cast(
+            tuple[np.ndarray, np.ndarray],
+            cv2.estimateAffinePartial2D(
+                from_=origin_points,
+                to=destination_points,
+                method=outlier_filtering_flag.cv2_flag,
+                ransacReprojThreshold=ransac_th,
+            ),
+        )
+        return cls(value=matrix), mask

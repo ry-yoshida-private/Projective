@@ -4,6 +4,7 @@ import numpy as np
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
+from opencv_utility import OpenCVOutlierFilteringFlag
 from .method import PerspectiveTransformationMethod
 
 @dataclass
@@ -36,7 +37,7 @@ class PerspectiveMatrix(ABC):
 
         Returns
         -------
-        PerspectiveMatrixContainer:
+        PerspectiveMatrix:
             The perspective matrix with corrected scale.
         """
         pass
@@ -140,12 +141,12 @@ class PerspectiveMatrix(ABC):
         
         Returns
         -------
-        PerspectiveMatrixContainer:
+        PerspectiveMatrix:
             The identity perspective matrix.
         """
 
     def __repr__(self) -> str:
-        return f"PerspectiveMatrixContainer(value.shape={self.value.shape}, transform_type={self.transform_type})"
+        return f"{self.__class__.__name__}(value.shape={self.value.shape}, transform_type={self.transform_type})"
 
     @property
     def column_vector(self) -> np.ndarray:
@@ -237,13 +238,51 @@ class PerspectiveMatrix(ABC):
         return True
 
     @classmethod
+    def from_points(
+        cls,
+        origin_points: np.ndarray,
+        destination_points: np.ndarray,
+        transform_type: PerspectiveTransformationMethod = PerspectiveTransformationMethod.HOMOGRAPHY,
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
+        ransac_th: float = 3.0,
+    ) -> tuple[PerspectiveMatrix, np.ndarray]:
+        """
+        Estimate a perspective matrix from origin and destination point pairs.
+
+        Parameters
+        ----------
+        origin_points : np.ndarray
+            Origin points (n, 2).
+        destination_points : np.ndarray
+            Destination points (n, 2).
+        transform_type : PerspectiveTransformationMethod
+            Affine or homography estimation.
+        outlier_filtering_flag : OpenCVOutlierFilteringFlag
+            Outlier filtering method passed to OpenCV.
+        ransac_th : float
+            RANSAC reprojection threshold.
+
+        Returns
+        -------
+        tuple[PerspectiveMatrix, np.ndarray]
+            The estimated perspective matrix and inlier mask of shape (N, 1).
+        """
+        return transform_type.perspective_class.create_from_points(
+            origin_points,
+            destination_points,
+            outlier_filtering_flag,
+            ransac_th,
+        )
+
+    @classmethod
     @abstractmethod
     def create_from_points(
         cls,
         origin_points: np.ndarray, 
         destination_points: np.ndarray, 
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0, 
-        ) -> PerspectiveMatrix:
+        ) -> tuple[PerspectiveMatrix, np.ndarray]:
         """ 
         Create a perspective matrix container from a set of origin and destination points.
 
@@ -258,6 +297,6 @@ class PerspectiveMatrix(ABC):
 
         Returns
         -------
-        PerspectiveMatrixContainer:
-            The perspective matrix container.
+        tuple[PerspectiveMatrix, np.ndarray]
+            The perspective matrix and inlier mask of shape (N, 1).
         """

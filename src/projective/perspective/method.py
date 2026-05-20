@@ -1,5 +1,9 @@
 import cv2
 from enum import Enum
+from typing import Type, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .perspective_matrix import PerspectiveMatrix
 
 class PerspectiveTransformationMethod(Enum):
     """
@@ -20,3 +24,21 @@ class PerspectiveTransformationMethod(Enum):
                 return cv2.MOTION_AFFINE
             case self.HOMOGRAPHY:
                 return cv2.MOTION_HOMOGRAPHY
+
+    @property
+    def perspective_class(self) -> Type['PerspectiveMatrix']:
+        """
+        Return the perspective class for the transformation method.
+        
+        Returns
+        -------
+        Type['PerspectiveMatrix']:
+            The perspective class for the transformation method.
+        """
+        match self:
+            case self.AFFINE:
+                from .affine_matrix import AffineMatrix
+                return AffineMatrix
+            case self.HOMOGRAPHY:
+                from .homography_matrix import HomographyMatrix
+                return HomographyMatrix

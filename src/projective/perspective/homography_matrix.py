@@ -4,9 +4,12 @@ import numpy as np
 import warnings
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Callable
+from typing import Callable, cast
+
+from opencv_utility import OpenCVOutlierFilteringFlag
 from .perspective_matrix import PerspectiveMatrix
 from .method import PerspectiveTransformationMethod
+
 
 @dataclass
 class HomographyMatrix(PerspectiveMatrix):
@@ -142,13 +145,14 @@ class HomographyMatrix(PerspectiveMatrix):
         """
         H_norm = self.value / self.value[2, 2]
         A = H_norm[:2, :2]
-        _, S = np.linalg.qr(A) # R, S: np.ndarray
+        # QR: Q = rotation/reflection, R = upper-triangular (scale on diag., shear off-diag.)
+        _, R = np.linalg.qr(A)
 
-        sx = np.linalg.norm(S[:, 0])
-        sy = np.linalg.norm(S[:, 1])
+        sx = np.linalg.norm(R[:, 0])
+        sy = np.linalg.norm(R[:, 1])
 
-        shear_x = S[0, 1] / sy if sy != 0 else 0
-        shear_y = S[1, 0] / sx if sx != 0 else 0
+        shear_x = R[0, 1] / sy if sy != 0 else 0
+        shear_y = R[1, 0] / sx if sx != 0 else 0
         return np.array([shear_x, shear_y])
 
     @property
@@ -192,8 +196,9 @@ class HomographyMatrix(PerspectiveMatrix):
         cls,
         origin_points: np.ndarray, 
         destination_points: np.ndarray, 
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0
-        ) -> HomographyMatrix:
+        ) -> tuple[HomographyMatrix, np.ndarray]:
         """
         Create a homography matrix from a set of origin and destination points.
 
@@ -203,27 +208,32 @@ class HomographyMatrix(PerspectiveMatrix):
             Origin points in homogeneous coordinates (n, 2).
         destination_points : np.ndarray
             Destination points in homogeneous coordinates (n, 2).
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag
+            Outlier filtering flag.
         ransac_th : float
             RANSAC threshold.
 
         Returns
         -------
-        HomographyMatrix
-            Homography matrix.
+        tuple[HomographyMatrix, np.ndarray]
+            Homography matrix and inlier mask of shape (N, 1).
         """
+        n = len(origin_points)
         if not cls._validate_points(origin_points, destination_points):
             warnings.warn("Invalid points for homography matrix creation")
-            return cls.create_identity_matrix()
-        
+            return cls.create_identity_matrix(), np.zeros((n, 1), dtype=np.uint8)
+
         origin_points = np.asarray(origin_points, dtype=np.float32)
         destination_points = np.asarray(destination_points, dtype=np.float32)
-        
-        matrix, _ = cv2.findHomography(
-            srcPoints=origin_points, 
-            dstPoints=destination_points, 
-            method=cv2.RANSAC, 
-            ransacReprojThreshold=ransac_th
-            ) #matrix: shape(3, 3) np.ndarray , mask: shape(n, 1) np.ndarray(bool)
 
-        return cls(value=matrix)
+        matrix, mask = cast(
+            tuple[np.ndarray, np.ndarray],
+            cv2.findHomography(
+                srcPoints=origin_points,
+                dstPoints=destination_points,
+                method=outlier_filtering_flag.cv2_flag,
+                ransacReprojThreshold=ransac_th,
+            ),
+        )
+        return cls(value=matrix), mask
 

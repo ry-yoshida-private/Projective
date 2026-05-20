@@ -4,7 +4,9 @@ import numpy as np
 from typing import cast
 from dataclasses import dataclass
 
-@dataclass
+from opencv_utility import OpenCVOutlierFilteringFlag
+
+@dataclass(frozen=True)
 class FundamentalMatrix:
     """
     FundamentalMatrix is a class that represents a fundamental matrix.
@@ -22,11 +24,12 @@ class FundamentalMatrix:
 
     @classmethod
     def from_points(
-        cls, 
-        points1: np.ndarray, 
+        cls,
+        points1: np.ndarray,
         points2: np.ndarray,
-        ransac_th: float = 3.0
-        ) -> tuple[FundamentalMatrix, np.ndarray]:
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
+        ransac_th: float = 3.0,
+    ) -> tuple[FundamentalMatrix, np.ndarray]:
         """
         Create a FundamentalMatrix from two sets of points.
 
@@ -36,15 +39,15 @@ class FundamentalMatrix:
             Array of shape (N, 2) containing the coordinates of points in the first image.
         points2: np.ndarray
             Array of shape (N, 2) containing the coordinates of points in the second image.
+        outlier_filtering_flag: OpenCVOutlierFilteringFlag
+            Estimation method passed to ``cv2.findFundamentalMat``.
         ransac_th: float
-            RANSAC threshold.
+            RANSAC reprojection threshold (pixels).
 
         Returns:
         ----------
         tuple[FundamentalMatrix, np.ndarray]: The fundamental matrix and the mask.
         """
-        points1 = points1.astype(np.float32)
-        points2 = points2.astype(np.float32)
         if points1.shape != points2.shape:
             raise ValueError(f"Points arrays must have the same shape, got {points1.shape} and {points2.shape}")
         if points1.ndim != 2:
@@ -54,5 +57,13 @@ class FundamentalMatrix:
         if points1.shape[1] != 2:
             raise ValueError(f"Points arrays must have 2 columns, got {points1.shape[1]}")
         
-        F, mask = cast(tuple[np.ndarray, np.ndarray], cv2.findFundamentalMat(points1, points2, cv2.FM_RANSAC, ransac_th)) # type: ignore
+        F, mask = cast(
+            tuple[np.ndarray, np.ndarray],
+            cv2.findFundamentalMat(
+                points1,
+                points2,
+                outlier_filtering_flag.fundamental_matrix_flag,
+                ransac_th,
+            ),
+        )  
         return cls(value=F), mask
