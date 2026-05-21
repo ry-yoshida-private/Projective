@@ -12,7 +12,7 @@ from .mixin import (
 )
 
 
-@dataclass
+@dataclass(frozen=True)
 class HomographyMatrix(
     HomographyTransformMixin,
     HomographyProjectiveMixin,

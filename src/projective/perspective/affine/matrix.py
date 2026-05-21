@@ -12,7 +12,7 @@ from .mixin import (
 )
 
 
-@dataclass
+@dataclass(frozen=True)
 class AffineMatrix(
     AffineTransformMixin,
     AffineProjectiveMixin,
