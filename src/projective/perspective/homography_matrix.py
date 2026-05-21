@@ -1,7 +1,6 @@
 from __future__ import annotations
 import cv2
 import numpy as np
-import warnings
 from dataclasses import dataclass
 from functools import cached_property
 from typing import Callable, cast
@@ -218,10 +217,8 @@ class HomographyMatrix(PerspectiveMatrix):
         tuple[HomographyMatrix, np.ndarray]
             Homography matrix and inlier mask of shape (N, 1).
         """
-        n = len(origin_points)
         if not cls._validate_points(origin_points, destination_points):
-            warnings.warn("Invalid points for homography matrix creation")
-            return cls.create_identity_matrix(), np.zeros((n, 1), dtype=np.uint8)
+            raise ValueError("Invalid points for homography matrix creation")
 
         origin_points = np.asarray(origin_points, dtype=np.float32)
         destination_points = np.asarray(destination_points, dtype=np.float32)
