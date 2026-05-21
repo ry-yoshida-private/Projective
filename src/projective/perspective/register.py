@@ -1,17 +1,18 @@
 import numpy as np
+from typing import cast
 
-from .perspective_matrix import PerspectiveMatrix
-from .homography_matrix import HomographyMatrix
-from .affine_matrix import AffineMatrix
+from .matrix import PerspectiveMatrix
+from .homography.matrix import HomographyMatrix
+from .affine.matrix import AffineMatrix
 from .method import PerspectiveTransformationMethod
 
 def register_perspective_matrix(
-    matrix: np.ndarray| AffineMatrix | HomographyMatrix | None,  
+    matrix: np.ndarray| AffineMatrix | HomographyMatrix | None,
     transform_type: PerspectiveTransformationMethod = PerspectiveTransformationMethod.HOMOGRAPHY
     ) -> PerspectiveMatrix:
     """
     Register a perspective matrix.
-    
+
     Parameters
     ----------
     matrix: np.ndarray| AffineMatrix| HomographyMatrix | None
@@ -32,6 +33,5 @@ def register_perspective_matrix(
     target_class = HomographyMatrix if transform_type == PerspectiveTransformationMethod.HOMOGRAPHY else AffineMatrix
 
     if matrix is None:
-        return target_class.create_identity_matrix()
+        return cast(PerspectiveMatrix, target_class.create_identity_matrix())
     return target_class(value=matrix)
-

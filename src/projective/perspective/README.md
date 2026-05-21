@@ -60,15 +60,15 @@ $$
 
 ## Components
 
-### Module layout
-
 | Component | Description |
 |-----------|-------------|
-| [method.py](./method.py) | Enum for transformation kind (Affine / Homography) and mapping to OpenCV motion types |
-| [perspective_matrix.py](./perspective_matrix.py) | Abstract base class for Affine and Homography perspective transforms |
-| [affine_matrix.py](./affine_matrix.py) | `AffineMatrix` container (shape 2×3), partial affine estimation |
-| [homography_matrix.py](./homography_matrix.py) | `HomographyMatrix` container (shape 3×3) |
-| [register.py](./register.py) | Register an existing matrix into a typed container |
+| [method.py](./method.py) | `PerspectiveTransformationMethod` enum and OpenCV motion-type mapping |
+| [matrix.py](./matrix.py) | Abstract `PerspectiveMatrix` dataclass (decomposition properties, shared API) |
+| [register.py](./register.py) | `register_perspective_matrix` — wrap ndarray or pass through typed matrices |
+| [protocols/](./protocols/README.md) | Shared `Protocol` types for matrix value, class, transform, and decomposition |
+| [mixin/](./mixin/README.md) | Shared factory and point-projection mixins for `PerspectiveMatrix` |
+| [affine/](./affine/README.md) | Partial affine (`AffineMatrix`, 2×3) implementation package |
+| [homography/](./homography/README.md) | Homography (`HomographyMatrix`, 3×3) implementation package |
 
 ## Example
 

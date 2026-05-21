@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .perspective_matrix import PerspectiveMatrix
+    from .matrix import PerspectiveMatrix
 
 class PerspectiveTransformationMethod(Enum):
     """
@@ -29,7 +29,7 @@ class PerspectiveTransformationMethod(Enum):
     def perspective_class(self) -> Type['PerspectiveMatrix']:
         """
         Return the perspective class for the transformation method.
-        
+
         Returns
         -------
         Type['PerspectiveMatrix']:
@@ -37,8 +37,8 @@ class PerspectiveTransformationMethod(Enum):
         """
         match self:
             case self.AFFINE:
-                from .affine_matrix import AffineMatrix
+                from .affine.matrix import AffineMatrix
                 return AffineMatrix
             case self.HOMOGRAPHY:
-                from .homography_matrix import HomographyMatrix
+                from .homography.matrix import HomographyMatrix
                 return HomographyMatrix
