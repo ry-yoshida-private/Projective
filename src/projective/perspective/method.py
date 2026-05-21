@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import cv2
 from enum import Enum
-from typing import Type, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .matrix import PerspectiveMatrix
@@ -26,13 +28,13 @@ class PerspectiveTransformationMethod(Enum):
                 return cv2.MOTION_HOMOGRAPHY
 
     @property
-    def perspective_class(self) -> Type['PerspectiveMatrix']:
+    def perspective_class(self) -> type[PerspectiveMatrix]:
         """
         Return the perspective class for the transformation method.
 
         Returns
         -------
-        Type['PerspectiveMatrix']:
+        type[PerspectiveMatrix]
             The perspective class for the transformation method.
         """
         match self:

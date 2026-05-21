@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ..matrix import PerspectiveMatrix
 
 
-class PerspectiveMatrixFactoryMixin(ABC):
+class PerspectiveFactoryMixin(ABC):
     """Factory methods shared by all perspective matrix types."""
 
     @staticmethod

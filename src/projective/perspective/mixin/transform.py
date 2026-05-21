@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-
 import numpy as np
+from abc import ABC, abstractmethod
 
 from typing import TYPE_CHECKING
 
@@ -10,10 +9,58 @@ if TYPE_CHECKING:
     from ..matrix import PerspectiveMatrix
 
 
-class PerspectiveMatrixTransformMixin(ABC):
-    """Coordinate transformation operations for perspective matrices."""
+class PerspectiveTransformMixin(ABC):
+    """Transform the matrix container itself (not external point coordinates)."""
 
     value: np.ndarray
+
+    @property
+    def column_vector(self) -> np.ndarray:
+        """
+        Return the column vector of the matrix.
+
+        Returns
+        -------
+        np.ndarray
+            Column vector with shape (value.size, 1).
+        """
+        return self.value.reshape(-1, 1)
+
+    @property
+    def row_vector(self) -> np.ndarray:
+        """
+        Return the row vector of the matrix.
+
+        Returns
+        -------
+        np.ndarray
+            Row vector with shape (1, value.size).
+        """
+        return self.value.reshape(1, -1)
+
+    @property
+    def shape(self) -> tuple[int, int]:
+        """
+        Return the shape of the matrix.
+
+        Returns
+        -------
+        tuple[int, int]
+            Two-dimensional shape of value.
+        """
+        return self.value.shape
+
+    @property
+    def flatten(self) -> np.ndarray:
+        """
+        Return the flattened matrix.
+
+        Returns
+        -------
+        np.ndarray
+            One-dimensional view with shape (value.size,).
+        """
+        return self.value.flatten()
 
     @abstractmethod
     def scale_correction(
@@ -25,34 +72,11 @@ class PerspectiveMatrixTransformMixin(ABC):
 
         Parameters
         ----------
-        scale: float
+        scale : float
             Scale factor.
 
         Returns
         -------
-        PerspectiveMatrix:
+        PerspectiveMatrix
             The perspective matrix with corrected scale.
-        """
-
-    @abstractmethod
-    def projective_transformation(
-        self,
-        points: np.ndarray,
-        is_inverse: bool = False,
-        up_axis_index: int = 2,
-    ) -> np.ndarray:
-        """
-        Apply the perspective transformation to 2D points.
-
-        Parameters:
-        ----------
-        points: np.ndarray
-            Input points of shape (N, 2) or (N, 3).
-        is_inverse: bool
-            If True, apply the inverse transformation to perspective matrix.
-        up_axis_index: int
-            Homography only: index of the up axis (0, 1, or 2). Ignored by affine matrices.
-
-        Returns:
-            np.ndarray: Transformed points of shape (N, 2).
         """

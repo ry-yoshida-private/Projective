@@ -10,4 +10,4 @@ Partial affine (2×3) perspective transforms: typed `AffineMatrix` container, af
 |-----------|-------------|
 | [matrix.py](./matrix.py) | `AffineMatrix` dataclass (shape validation, decomposition overrides) |
 | [protocols/](./protocols/README.md) | Affine-specific `Protocol` types for factory typing |
-| [mixin/](./mixin/README.md) | Affine estimation and 2×3 point projection mixins |
+| [mixin/](./mixin/README.md) | Affine estimation, matrix transform, and point projection mixins |

@@ -2,74 +2,87 @@ from __future__ import annotations
 
 import numpy as np
 from functools import cached_property
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING
 
-from ...mixin.transform import PerspectiveMatrixTransformMixin
+from ...mixin.transform import PerspectiveTransformMixin
 
 if TYPE_CHECKING:
     from ..matrix import HomographyMatrix
 
 
-class HomographyMatrixTransformMixin(PerspectiveMatrixTransformMixin):
-    """Coordinate transformation operations for homography matrices."""
+class HomographyTransformMixin(PerspectiveTransformMixin):
+    """Transform the homography matrix container itself."""
 
-    value: np.ndarray
-
-    def projective_transformation(
-        self,
-        points: np.ndarray,
-        is_inverse: bool = False,
-        up_axis_index: int = 2,
-    ) -> np.ndarray:
+    @property
+    def column_vector(self) -> np.ndarray:
         """
-        Apply the homography transformation to 2D points.
+        Return the column vector of a 3×3 homography matrix.
 
-        Parameters:
-        ----------
-        points: np.ndarray
-            Input points of shape (N, 2) or (N, 3).
-                                 - (x, y) will be automatically converted to (x, y, 1).
-                                 - (x, y, w) is treated as homogeneous coordinates.
-        is_inverse: bool
-            If True, apply the inverse transformation to homography matrix.
-        up_axis_index: int
-            The index of the up axis. 0 or 1 or 2.
-
-        Returns:
-            np.ndarray: Transformed points of shape (N, 2).
+        Returns
+        -------
+        np.ndarray
+            Column vector with shape (9, 1).
         """
-        if up_axis_index not in (0, 1, 2):
-            raise ValueError("Up axis index must be 0, 1, or 2")
-        if points.ndim != 2 or points.shape[1] not in (2, 3):
-            raise ValueError("Input points must have shape (N, 2) or (N, 3)")
+        return super().column_vector
 
-        if points.shape[1] == 2:
-            ones = np.ones((points.shape[0], 1))
-            if up_axis_index == 0:
-                points = np.hstack([points, ones])
-            elif up_axis_index == 1:
-                points = np.hstack([points[:, 0], ones, points[:, 1]])
-            elif up_axis_index == 2:
-                points = np.hstack([points, ones])
+    @property
+    def row_vector(self) -> np.ndarray:
+        """
+        Return the row vector of a 3×3 homography matrix.
 
-        matrix = self.inverse if is_inverse else self.value
-        transformed = (matrix @ points.T).T
+        Returns
+        -------
+        np.ndarray
+            Row vector with shape (1, 9).
+        """
+        return super().row_vector
 
-        numerator_getters: dict[int, Callable[[np.ndarray], np.ndarray]] = {
-            0: lambda arr: arr[:, 1:],
-            1: lambda arr: arr[:, (0, 2)],
-            2: lambda arr: arr[:, :2],
-        }
-        numerator = numerator_getters[up_axis_index](transformed)
-        denominators = transformed[:, up_axis_index][:, None]
-        return numerator / denominators
+    @property
+    def shape(self) -> tuple[int, int]:
+        """
+        Return the shape of the homography matrix.
+
+        Returns
+        -------
+        tuple[int, int]
+            Matrix shape (3, 3).
+        """
+        return super().shape
+
+    @property
+    def flatten(self) -> np.ndarray:
+        """
+        Return the flattened homography matrix.
+
+        Returns
+        -------
+        np.ndarray
+            One-dimensional array with shape (9,).
+        """
+        return super().flatten
 
     @cached_property
     def inverse(self) -> np.ndarray:
+        """
+        Return the inverse of the homography matrix.
+
+        Returns
+        -------
+        np.ndarray
+            Inverse matrix with shape (3, 3).
+        """
         return np.linalg.inv(self.value)
 
     @property
     def T(self) -> np.ndarray:
+        """
+        Return the transpose of the homography matrix.
+
+        Returns
+        -------
+        np.ndarray
+            Transposed matrix with shape (3, 3).
+        """
         return self.value.T
 
     def scale_correction(self, scale: float) -> HomographyMatrix:
@@ -84,7 +97,7 @@ class HomographyMatrixTransformMixin(PerspectiveMatrixTransformMixin):
         Returns
         -------
         HomographyMatrix
-            Homography matrix.
+            Homography matrix with scale corrected under similarity conjugation.
         """
         S = np.diag([scale, scale, 1])
         S_inv = np.linalg.inv(S)

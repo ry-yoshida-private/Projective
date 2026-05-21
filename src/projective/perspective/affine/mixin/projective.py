@@ -1,0 +1,54 @@
+from __future__ import annotations
+
+import numpy as np
+
+from ...mixin.projective import PerspectiveProjectiveMixin
+
+
+class AffineProjectiveMixin(PerspectiveProjectiveMixin):
+    """Project 2D points with a partial affine matrix."""
+
+    value: np.ndarray
+
+    def projective_transformation(
+        self,
+        points: np.ndarray,
+        is_inverse: bool = False,
+        up_axis_index: int = 2,
+    ) -> np.ndarray:
+        """
+        Apply the affine matrix to 2D points.
+
+        Parameters
+        ----------
+        points : np.ndarray
+            Input points of shape (N, 2) or (N, 3).
+        is_inverse : bool
+            Not supported for affine matrices.
+        up_axis_index : int
+            Ignored for affine matrices.
+
+        Returns
+        -------
+        np.ndarray
+            Projected points of shape (N, 2).
+        """
+        del up_axis_index
+        if is_inverse:
+            raise ValueError("Inverse transformation is not supported for affine matrix")
+        if points.ndim != 2 or points.shape[1] not in (2, 3):
+            raise ValueError("Input points must have shape (N, 2) or (N, 3)")
+
+        if points.shape[1] == 2:
+            ones = np.ones((points.shape[0], 1))
+            points_3d = np.hstack([points, ones])
+        else:
+            points_3d = points
+
+        transformed = (self.value @ points_3d.T).T
+
+        if points.shape[1] == 3:
+            w = points_3d[:, 2]
+            transformed = transformed / w[:, np.newaxis]
+
+        return np.asarray(transformed, dtype=np.float64)

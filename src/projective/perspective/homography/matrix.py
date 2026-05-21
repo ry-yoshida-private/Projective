@@ -5,14 +5,18 @@ from dataclasses import dataclass
 
 from ..matrix import PerspectiveMatrix
 from ..method import PerspectiveTransformationMethod
-from .mixin.factory import HomographyMatrixFactoryMixin
-from .mixin.transform import HomographyMatrixTransformMixin
+from .mixin import (
+    HomographyFactoryMixin,
+    HomographyProjectiveMixin,
+    HomographyTransformMixin,
+)
 
 
 @dataclass
 class HomographyMatrix(
-    HomographyMatrixTransformMixin,
-    HomographyMatrixFactoryMixin,
+    HomographyTransformMixin,
+    HomographyProjectiveMixin,
+    HomographyFactoryMixin,
     PerspectiveMatrix,
 ):
     """

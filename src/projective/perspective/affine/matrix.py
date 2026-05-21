@@ -5,14 +5,18 @@ from dataclasses import dataclass
 
 from ..matrix import PerspectiveMatrix
 from ..method import PerspectiveTransformationMethod
-from .mixin.factory import AffineMatrixFactoryMixin
-from .mixin.transform import AffineMatrixTransformMixin
+from .mixin import (
+    AffineFactoryMixin,
+    AffineProjectiveMixin,
+    AffineTransformMixin,
+)
 
 
 @dataclass
 class AffineMatrix(
-    AffineMatrixTransformMixin,
-    AffineMatrixFactoryMixin,
+    AffineTransformMixin,
+    AffineProjectiveMixin,
+    AffineFactoryMixin,
     PerspectiveMatrix,
 ):
     """

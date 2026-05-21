@@ -1,7 +1,9 @@
-from .factory import AffineMatrixFactoryMixin
-from .transform import AffineMatrixTransformMixin
+from .factory import AffineFactoryMixin
+from .projective import AffineProjectiveMixin
+from .transform import AffineTransformMixin
 
 __all__ = [
-    "AffineMatrixFactoryMixin",
-    "AffineMatrixTransformMixin",
+    "AffineFactoryMixin",
+    "AffineProjectiveMixin",
+    "AffineTransformMixin",
 ]

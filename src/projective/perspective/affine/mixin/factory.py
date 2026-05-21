@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING, cast
 
 from opencv_utility import OpenCVOutlierFilteringFlag
 
-from ...mixin.factory import PerspectiveMatrixFactoryMixin
+from ...mixin.factory import PerspectiveFactoryMixin
 
 if TYPE_CHECKING:
     from ..matrix import AffineMatrix
 
 
-class AffineMatrixFactoryMixin(PerspectiveMatrixFactoryMixin):
+class AffineFactoryMixin(PerspectiveFactoryMixin):
     """Factory methods for affine matrix estimation."""
 
     @classmethod

@@ -1,7 +1,9 @@
-from .factory import HomographyMatrixFactoryMixin
-from .transform import HomographyMatrixTransformMixin
+from .factory import HomographyFactoryMixin
+from .projective import HomographyProjectiveMixin
+from .transform import HomographyTransformMixin
 
 __all__ = [
-    "HomographyMatrixFactoryMixin",
-    "HomographyMatrixTransformMixin",
+    "HomographyFactoryMixin",
+    "HomographyProjectiveMixin",
+    "HomographyTransformMixin",
 ]

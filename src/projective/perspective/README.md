@@ -65,8 +65,8 @@ $$
 | [method.py](./method.py) | `PerspectiveTransformationMethod` enum and OpenCV motion-type mapping |
 | [matrix.py](./matrix.py) | Abstract `PerspectiveMatrix` dataclass (decomposition properties, shared API) |
 | [register.py](./register.py) | `register_perspective_matrix` — wrap ndarray or pass through typed matrices |
-| [protocols/](./protocols/README.md) | Shared `Protocol` types for matrix value, class, transform, and decomposition |
-| [mixin/](./mixin/README.md) | Shared factory and point-projection mixins for `PerspectiveMatrix` |
+| [protocols/](./protocols/README.md) | Shared `Protocol` types for matrix value, class, transform, projective, and decomposition |
+| [mixin/](./mixin/README.md) | Shared factory, transform (matrix self), and projective (point map) mixins for `PerspectiveMatrix` |
 | [affine/](./affine/README.md) | Partial affine (`AffineMatrix`, 2×3) implementation package |
 | [homography/](./homography/README.md) | Homography (`HomographyMatrix`, 3×3) implementation package |
 

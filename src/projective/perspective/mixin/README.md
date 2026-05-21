@@ -2,11 +2,12 @@
 
 ## Overview
 
-Abstract mixins that implement shared behavior on `PerspectiveMatrix`: OpenCV-based estimation from point pairs (`from_points`) and homogeneous 2D point projection.
+Abstract mixins for `PerspectiveMatrix`: estimation from point pairs, matrix self-transformation, and 2D point projection.
 
 ## Components
 
 | Component | Description |
 |-----------|-------------|
-| [factory.py](./factory.py) | `PerspectiveMatrixFactoryMixin` — point validation and `from_points` dispatch |
-| [transform.py](./transform.py) | `PerspectiveMatrixTransformMixin` — `projective_transformation` for 2D points |
+| [factory.py](./factory.py) | `PerspectiveFactoryMixin` — point validation and `from_points` dispatch |
+| [transform.py](./transform.py) | `PerspectiveTransformMixin` — generic container views and `scale_correction` |
+| [projective.py](./projective.py) | `PerspectiveProjectiveMixin` — `projective_transformation` for 2D points |

@@ -18,7 +18,7 @@ class FundamentalMatrix:
     """
     value: np.ndarray
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.value.shape != (3, 3):
             raise ValueError("Fundamental matrix must be a 3x3 matrix")
 

@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING, cast
 
 from opencv_utility import OpenCVOutlierFilteringFlag
 
-from ...mixin.factory import PerspectiveMatrixFactoryMixin
+from ...mixin.factory import PerspectiveFactoryMixin
 
 if TYPE_CHECKING:
     from ..matrix import HomographyMatrix
 
 
-class HomographyMatrixFactoryMixin(PerspectiveMatrixFactoryMixin):
+class HomographyFactoryMixin(PerspectiveFactoryMixin):
     """Factory methods for homography matrix estimation."""
 
     @classmethod

@@ -1,7 +1,9 @@
-from .factory import PerspectiveMatrixFactoryMixin
-from .transform import PerspectiveMatrixTransformMixin
+from .factory import PerspectiveFactoryMixin
+from .projective import PerspectiveProjectiveMixin
+from .transform import PerspectiveTransformMixin
 
 __all__ = [
-    "PerspectiveMatrixFactoryMixin",
-    "PerspectiveMatrixTransformMixin",
+    "PerspectiveFactoryMixin",
+    "PerspectiveProjectiveMixin",
+    "PerspectiveTransformMixin",
 ]

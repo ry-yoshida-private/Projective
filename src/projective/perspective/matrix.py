@@ -5,14 +5,18 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from .method import PerspectiveTransformationMethod
-from .mixin.factory import PerspectiveMatrixFactoryMixin
-from .mixin.transform import PerspectiveMatrixTransformMixin
+from .mixin import (
+    PerspectiveFactoryMixin,
+    PerspectiveProjectiveMixin,
+    PerspectiveTransformMixin,
+)
 
 
 @dataclass
 class PerspectiveMatrix(
-    PerspectiveMatrixFactoryMixin,
-    PerspectiveMatrixTransformMixin,
+    PerspectiveFactoryMixin,
+    PerspectiveTransformMixin,
+    PerspectiveProjectiveMixin,
     ABC,
 ):
     """
@@ -53,8 +57,8 @@ class PerspectiveMatrix(
         c, _ = self.value[1, :2]  # c, d: float
         sx = np.hypot(a, c)
         if sx == 0:
-            return 0
-        return np.arctan2(c / sx, a / sx)
+            return 0.0
+        return float(np.arctan2(c / sx, a / sx))
 
     @property
     def scale(self) -> np.ndarray:
@@ -101,54 +105,6 @@ class PerspectiveMatrix(
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(value.shape={self.value.shape}, transform_type={self.transform_type})"
-
-    @property
-    def column_vector(self) -> np.ndarray:
-        """
-        Return the column vector of the matrix.
-
-        Returns
-        -------
-        np.ndarray:
-            The column vector of the matrix with shape (N, 1).
-        """
-        return self.value.reshape(-1, 1)
-
-    @property
-    def row_vector(self) -> np.ndarray:
-        """
-        Return the row vector of the matrix.
-
-        Returns
-        -------
-        np.ndarray:
-            The row vector of the matrix with shape (1, N).
-        """
-        return self.value.reshape(1, -1)
-
-    @property
-    def shape(self) -> tuple[int, int]:
-        """
-        Return the shape of the matrix.
-
-        Returns
-        -------
-        tuple[int, int]:
-            The shape of the matrix.
-        """
-        return self.value.shape
-
-    @property
-    def flatten(self) -> np.ndarray:
-        """
-        Return the flattened matrix.
-
-        Returns
-        -------
-        np.ndarray:
-            The flattened matrix with shape (6,) or (9,).
-        """
-        return self.value.flatten()
 
     @property
     @abstractmethod

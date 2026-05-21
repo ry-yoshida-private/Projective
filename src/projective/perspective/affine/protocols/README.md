@@ -2,7 +2,7 @@
 
 ## Overview
 
-Affine-only structural types used by `AffineMatrixFactoryMixin` for static typing without importing concrete matrix classes at runtime.
+Affine-only structural types used by `AffineFactoryMixin` for static typing without importing concrete matrix classes at runtime.
 
 ## Components
 
