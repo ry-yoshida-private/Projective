@@ -22,12 +22,12 @@ classifiers = [
 dependencies = [
     "numpy",
     "opencv-contrib-python",
-    "opencv-utility @ git+https://github.com/ry-yoshida-private/OpenCVUtility.git",
+    "opencv-utility @ git+https://github.com/ry-yoshida-dev/OpenCVUtility.git",
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/ry-yoshida-private/Projective"
-"Bug Tracker" = "https://github.com/ry-yoshida-private/Projective/issues"
+"Homepage" = "https://github.com/ry-yoshida-dev/Projective"
+"Bug Tracker" = "https://github.com/ry-yoshida-dev/Projective/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

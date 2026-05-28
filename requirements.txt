@@ -1,3 +1,3 @@
 numpy
 opencv-contrib-python
-opencv-utility @ git+https://github.com/ry-yoshida-private/OpenCVUtility.git
+opencv-utility @ git+https://github.com/ry-yoshida-dev/OpenCVUtility.git
