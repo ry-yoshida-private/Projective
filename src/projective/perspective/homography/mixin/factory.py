@@ -66,9 +66,9 @@ class HomographyFactoryMixin(PerspectiveFactoryMixin):
         Parameters
         ----------
         origin_points : np.ndarray
-            Origin points in homogeneous coordinates (n, 2).
+            Origin points (n, 2).
         destination_points : np.ndarray
-            Destination points in homogeneous coordinates (n, 2).
+            Destination points (n, 2).
         outlier_filtering_flag: OpenCVOutlierFilteringFlag
             Outlier filtering flag.
         ransac_th : float

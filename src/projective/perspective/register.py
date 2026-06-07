@@ -1,5 +1,4 @@
 import numpy as np
-from typing import cast
 
 from .matrix import PerspectiveMatrix
 from .homography.matrix import HomographyMatrix
@@ -33,5 +32,5 @@ def register_perspective_matrix(
     target_class = HomographyMatrix if transform_type == PerspectiveTransformationMethod.HOMOGRAPHY else AffineMatrix
 
     if matrix is None:
-        return cast(PerspectiveMatrix, target_class.create_identity_matrix())
+        return target_class.create_identity_matrix()
     return target_class(value=matrix)

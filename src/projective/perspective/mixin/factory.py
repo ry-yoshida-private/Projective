@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from opencv_utility import OpenCVOutlierFilteringFlag
 
 from ..method import PerspectiveTransformationMethod
-from ..protocols.matrix_value import MatrixValueProtocol
 
 if TYPE_CHECKING:
     from ..matrix import PerspectiveMatrix
@@ -28,9 +27,9 @@ class PerspectiveFactoryMixin(ABC):
         Parameters
         ----------
         origin_points: np.ndarray
-            Origin points in homogeneous coordinates (n, 2).
+            Origin points (n, 2).
         destination_points: np.ndarray
-            Destination points in homogeneous coordinates (n, 2).
+            Destination points (n, 2).
 
         Returns
         -------
@@ -82,11 +81,11 @@ class PerspectiveFactoryMixin(ABC):
             outlier_filtering_flag,
             ransac_th,
         )
-        return cast(tuple[PerspectiveMatrix, np.ndarray], (matrix, mask))
+        return matrix, mask
 
     @classmethod
     @abstractmethod
-    def create_identity_matrix(cls) -> MatrixValueProtocol:
+    def create_identity_matrix(cls) -> PerspectiveMatrix:
         """
         Create an identity perspective matrix.
 
@@ -104,18 +103,20 @@ class PerspectiveFactoryMixin(ABC):
         destination_points: np.ndarray,
         outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0,
-    ) -> tuple[MatrixValueProtocol, np.ndarray]:
+    ) -> tuple[PerspectiveMatrix, np.ndarray]:
         """
         Create a perspective matrix container from a set of origin and destination points.
 
         Parameters
         ----------
         origin_points : np.ndarray
-            Origin points in homogeneous coordinates (n, 2).
+            Origin points (n, 2).
         destination_points : np.ndarray
-            Destination points in homogeneous coordinates (n, 2).
+            Destination points (n, 2).
+        outlier_filtering_flag : OpenCVOutlierFilteringFlag
+            Outlier filtering method passed to OpenCV.
         ransac_th : float
-            RANSAC threshold.
+            RANSAC reprojection threshold.
 
         Returns
         -------
