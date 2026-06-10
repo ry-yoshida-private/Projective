@@ -2,21 +2,20 @@ from __future__ import annotations
 
 from typing import Protocol
 
-import numpy as np
-
+from ...types import FloatArray
 from ..method import PerspectiveTransformationMethod
 
 
 class PerspectiveMatrixDecompositionProtocol(Protocol):
     """Protocol for decomposition properties of a perspective matrix."""
 
-    value: np.ndarray
+    value: FloatArray
 
     @property
-    def translation(self) -> np.ndarray: ...
+    def translation(self) -> FloatArray: ...
 
     @property
-    def shear(self) -> np.ndarray: ...
+    def shear(self) -> FloatArray: ...
 
     @property
     def has_perspective(self) -> bool: ...

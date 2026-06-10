@@ -4,6 +4,7 @@ import numpy as np
 from functools import cached_property
 from typing import TYPE_CHECKING
 
+from ....types import FloatArray
 from ...mixin.transform import PerspectiveTransformMixin
 
 if TYPE_CHECKING:
@@ -14,25 +15,25 @@ class HomographyTransformMixin(PerspectiveTransformMixin):
     """Transform the homography matrix container itself."""
 
     @property
-    def column_vector(self) -> np.ndarray:
+    def column_vector(self) -> FloatArray:
         """
         Return the column vector of a 3×3 homography matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Column vector with shape (9, 1).
         """
         return super().column_vector
 
     @property
-    def row_vector(self) -> np.ndarray:
+    def row_vector(self) -> FloatArray:
         """
         Return the row vector of a 3×3 homography matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Row vector with shape (1, 9).
         """
         return super().row_vector
@@ -50,37 +51,37 @@ class HomographyTransformMixin(PerspectiveTransformMixin):
         return super().shape
 
     @property
-    def flatten(self) -> np.ndarray:
+    def flatten(self) -> FloatArray:
         """
         Return the flattened homography matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             One-dimensional array with shape (9,).
         """
         return super().flatten
 
     @cached_property
-    def inverse(self) -> np.ndarray:
+    def inverse(self) -> FloatArray:
         """
         Return the inverse of the homography matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Inverse matrix with shape (3, 3).
         """
-        return np.linalg.inv(self.value)
+        return np.linalg.inv(self.value).astype(np.float64)
 
     @property
-    def T(self) -> np.ndarray:
+    def T(self) -> FloatArray:
         """
         Return the transpose of the homography matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Transposed matrix with shape (3, 3).
         """
         return self.value.T

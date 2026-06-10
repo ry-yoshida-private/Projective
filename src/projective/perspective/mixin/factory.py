@@ -3,10 +3,9 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-import numpy as np
-
 from opencv_utility import OpenCVOutlierFilteringFlag
 
+from ...types import FloatArray, MaskArray
 from ..method import PerspectiveTransformationMethod
 
 if TYPE_CHECKING:
@@ -18,17 +17,17 @@ class PerspectiveFactoryMixin(ABC):
 
     @staticmethod
     def _validate_points(
-        origin_points: np.ndarray,
-        destination_points: np.ndarray,
+        origin_points: FloatArray,
+        destination_points: FloatArray,
     ) -> bool:
         """
         Validate input points for matrix creation.
 
         Parameters
         ----------
-        origin_points: np.ndarray
+        origin_points: FloatArray
             Origin points (n, 2).
-        destination_points: np.ndarray
+        destination_points: FloatArray
             Destination points (n, 2).
 
         Returns
@@ -48,20 +47,20 @@ class PerspectiveFactoryMixin(ABC):
     @classmethod
     def from_points(
         cls,
-        origin_points: np.ndarray,
-        destination_points: np.ndarray,
+        origin_points: FloatArray,
+        destination_points: FloatArray,
         transform_type: PerspectiveTransformationMethod = PerspectiveTransformationMethod.HOMOGRAPHY,
         outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0,
-    ) -> tuple[PerspectiveMatrix, np.ndarray]:
+    ) -> tuple[PerspectiveMatrix, MaskArray]:
         """
         Estimate a perspective matrix from origin and destination point pairs.
 
         Parameters
         ----------
-        origin_points : np.ndarray
+        origin_points : FloatArray
             Origin points (n, 2).
-        destination_points : np.ndarray
+        destination_points : FloatArray
             Destination points (n, 2).
         transform_type : PerspectiveTransformationMethod
             Affine or homography estimation.
@@ -72,7 +71,7 @@ class PerspectiveFactoryMixin(ABC):
 
         Returns
         -------
-        tuple[PerspectiveMatrix, np.ndarray]
+        tuple[PerspectiveMatrix, MaskArray]
             The estimated perspective matrix and inlier mask of shape (N, 1).
         """
         matrix, mask = transform_type.perspective_class.create_from_points(
@@ -99,19 +98,19 @@ class PerspectiveFactoryMixin(ABC):
     @abstractmethod
     def create_from_points(
         cls,
-        origin_points: np.ndarray,
-        destination_points: np.ndarray,
+        origin_points: FloatArray,
+        destination_points: FloatArray,
         outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0,
-    ) -> tuple[PerspectiveMatrix, np.ndarray]:
+    ) -> tuple[PerspectiveMatrix, MaskArray]:
         """
         Create a perspective matrix container from a set of origin and destination points.
 
         Parameters
         ----------
-        origin_points : np.ndarray
+        origin_points : FloatArray
             Origin points (n, 2).
-        destination_points : np.ndarray
+        destination_points : FloatArray
             Destination points (n, 2).
         outlier_filtering_flag : OpenCVOutlierFilteringFlag
             Outlier filtering method passed to OpenCV.
@@ -120,6 +119,6 @@ class PerspectiveFactoryMixin(ABC):
 
         Returns
         -------
-        tuple[PerspectiveMatrix, np.ndarray]
+        tuple[PerspectiveMatrix, MaskArray]
             The perspective matrix and inlier mask of shape (N, 1).
         """

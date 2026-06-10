@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass
 
+from ...types import FloatArray
 from ..matrix import PerspectiveMatrix
 from ..method import PerspectiveTransformationMethod
 from .mixin import (
@@ -34,7 +35,7 @@ class HomographyMatrix(
 
     Attributes:
     ----------
-    value: np.ndarray (inherited from base)
+    value: FloatArray (inherited from base)
         Value of the homography matrix with shape (3, 3).
     """
 
@@ -43,7 +44,7 @@ class HomographyMatrix(
             raise ValueError("Homography matrix must be a 3x3 matrix")
 
     @property
-    def translation(self) -> np.ndarray:
+    def translation(self) -> FloatArray:
         """
         Approximate translation vector (tx, ty) from homography.
 
@@ -53,13 +54,13 @@ class HomographyMatrix(
         return self.value[:2, 2]
 
     @property
-    def shear(self) -> np.ndarray:
+    def shear(self) -> FloatArray:
         """
         Return the shear components of the homography matrix.
 
         Returns:
         ----------
-        np.ndarray:
+        FloatArray:
             The shear of the homography matrix.
         """
         H_norm = self.value / self.value[2, 2]

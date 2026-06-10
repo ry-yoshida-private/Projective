@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-import numpy as np
-
+from ...types import FloatArray
 from .matrix_value import MatrixValueProtocol
 
 
@@ -12,8 +11,8 @@ class PerspectiveMatrixClassProtocol(Protocol):
 
     @staticmethod
     def _validate_points(
-        origin_points: np.ndarray,
-        destination_points: np.ndarray,
+        origin_points: FloatArray,
+        destination_points: FloatArray,
     ) -> bool: ...
 
-    def __call__(self, *, value: np.ndarray) -> MatrixValueProtocol: ...
+    def __call__(self, *, value: FloatArray) -> MatrixValueProtocol: ...

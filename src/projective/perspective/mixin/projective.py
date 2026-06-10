@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-import numpy as np
-
 from typing import TYPE_CHECKING
+
+from ...types import FloatArray
 
 if TYPE_CHECKING:
     pass
@@ -13,21 +13,21 @@ if TYPE_CHECKING:
 class PerspectiveProjectiveMixin(ABC):
     """Project external 2D points with the matrix (homogeneous map + dehomogenize)."""
 
-    value: np.ndarray
+    value: FloatArray
 
     @abstractmethod
     def projective_transformation(
         self,
-        points: np.ndarray,
+        points: FloatArray,
         is_inverse: bool = False,
         up_axis_index: int = 2,
-    ) -> np.ndarray:
+    ) -> FloatArray:
         """
         Apply the perspective matrix to 2D points.
 
         Parameters
         ----------
-        points : np.ndarray
+        points : FloatArray
             Input points of shape (N, 2) or (N, 3).
         is_inverse : bool
             If True, apply the inverse matrix.
@@ -36,6 +36,6 @@ class PerspectiveProjectiveMixin(ABC):
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Projected points of shape (N, 2).
         """

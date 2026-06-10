@@ -4,6 +4,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from ..types import FloatArray
 from .method import PerspectiveTransformationMethod
 from .mixin import (
     PerspectiveFactoryMixin,
@@ -27,20 +28,20 @@ class PerspectiveMatrix(
 
     Attributes:
     ----------
-    value: np.ndarray
+    value: FloatArray
         The perspective transformation matrix with shape (N, M).
     """
-    value: np.ndarray
+    value: FloatArray
 
     @property
     @abstractmethod
-    def translation(self) -> np.ndarray:
+    def translation(self) -> FloatArray:
         """
         Get the translation component of the transformation.
 
         Returns
         -------
-        np.ndarray:
+        FloatArray:
             The translation component of the transformation with shape (2,).
         """
 
@@ -61,7 +62,7 @@ class PerspectiveMatrix(
         return float(np.arctan2(c / sx, a / sx))
 
     @property
-    def scale(self) -> np.ndarray:
+    def scale(self) -> FloatArray:
         """
         Return the scale factors (sx, sy).
 
@@ -70,7 +71,7 @@ class PerspectiveMatrix(
 
         Returns
         -------
-        np.ndarray:
+        FloatArray:
             The scale factors with shape (2,).
         """
         a, b = self.value[0, :2]
@@ -81,13 +82,13 @@ class PerspectiveMatrix(
 
     @property
     @abstractmethod
-    def shear(self) -> np.ndarray:
+    def shear(self) -> FloatArray:
         """
         Get the shear factors.
 
         Returns
         -------
-        np.ndarray:
+        FloatArray:
             The shear factors with shape (2,).
         """
 

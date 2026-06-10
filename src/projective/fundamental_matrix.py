@@ -1,10 +1,11 @@
 from __future__ import annotations
 import cv2
-import numpy as np
 from typing import cast
 from dataclasses import dataclass
 
 from opencv_utility import OpenCVOutlierFilteringFlag
+
+from .types import FloatArray, MaskArray
 
 @dataclass(frozen=True)
 class FundamentalMatrix:
@@ -13,10 +14,10 @@ class FundamentalMatrix:
 
     Attributes:
     ----------
-    value: np.ndarray
+    value: FloatArray
         The fundamental matrix with shape (3, 3).
     """
-    value: np.ndarray
+    value: FloatArray
 
     def __post_init__(self) -> None:
         if self.value.shape != (3, 3):
@@ -25,19 +26,19 @@ class FundamentalMatrix:
     @classmethod
     def from_points(
         cls,
-        points1: np.ndarray,
-        points2: np.ndarray,
+        points1: FloatArray,
+        points2: FloatArray,
         outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0,
-    ) -> tuple[FundamentalMatrix, np.ndarray]:
+    ) -> tuple[FundamentalMatrix, MaskArray]:
         """
         Create a FundamentalMatrix from two sets of points.
 
         Parameters:
         ----------
-        points1: np.ndarray
+        points1: FloatArray
             Array of shape (N, 2) containing the coordinates of points in the first image.
-        points2: np.ndarray
+        points2: FloatArray
             Array of shape (N, 2) containing the coordinates of points in the second image.
         outlier_filtering_flag: OpenCVOutlierFilteringFlag
             Estimation method passed to ``cv2.findFundamentalMat``.
@@ -46,7 +47,7 @@ class FundamentalMatrix:
 
         Returns:
         ----------
-        tuple[FundamentalMatrix, np.ndarray]: The fundamental matrix and the mask.
+        tuple[FundamentalMatrix, MaskArray]: The fundamental matrix and the mask.
         """
         if points1.shape != points2.shape:
             raise ValueError(f"Points arrays must have the same shape, got {points1.shape} and {points2.shape}")
@@ -58,7 +59,7 @@ class FundamentalMatrix:
             raise ValueError(f"Points arrays must have 2 columns, got {points1.shape[1]}")
         
         F, mask = cast(
-            tuple[np.ndarray, np.ndarray],
+            tuple[FloatArray, MaskArray],
             cv2.findFundamentalMat(
                 points1,
                 points2,

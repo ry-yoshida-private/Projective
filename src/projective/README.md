@@ -8,6 +8,7 @@ Utilities for **projective geometry**: epipolar constraints at the package root 
 
 | Component | Description |
 |-----------|-------------|
+| [types.py](./types.py) | Shared NumPy type aliases (`FloatArray` for float32/float64, `MaskArray` for uint8) |
 | [perspective/README.md](./perspective/README.md) | Partial affine and homography matrix containers; point estimation returns `(matrix, mask)` |
 | [essential_matrix.py](./essential_matrix.py) | Immutable `EssentialMatrix` (3×3) |
 | [fundamental_matrix.py](./fundamental_matrix.py) | Immutable `FundamentalMatrix` (3×3) |

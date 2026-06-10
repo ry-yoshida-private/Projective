@@ -2,26 +2,27 @@ from __future__ import annotations
 
 import numpy as np
 
+from ....types import FloatArray
 from ...mixin.projective import PerspectiveProjectiveMixin
 
 
 class AffineProjectiveMixin(PerspectiveProjectiveMixin):
     """Project 2D points with a partial affine matrix."""
 
-    value: np.ndarray
+    value: FloatArray
 
     def projective_transformation(
         self,
-        points: np.ndarray,
+        points: FloatArray,
         is_inverse: bool = False,
         up_axis_index: int = 2,
-    ) -> np.ndarray:
+    ) -> FloatArray:
         """
         Apply the affine matrix to 2D points.
 
         Parameters
         ----------
-        points : np.ndarray
+        points : FloatArray
             Input points of shape (N, 2) or (N, 3).
         is_inverse : bool
             Not supported for affine matrices.
@@ -30,7 +31,7 @@ class AffineProjectiveMixin(PerspectiveProjectiveMixin):
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Projected points of shape (N, 2).
         """
         del up_axis_index

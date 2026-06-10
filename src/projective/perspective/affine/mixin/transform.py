@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 from typing import TYPE_CHECKING
 
+from ....types import FloatArray
 from ...mixin.transform import PerspectiveTransformMixin
 
 if TYPE_CHECKING:
@@ -13,25 +14,25 @@ class AffineTransformMixin(PerspectiveTransformMixin):
     """Transform the affine matrix container itself."""
 
     @property
-    def column_vector(self) -> np.ndarray:
+    def column_vector(self) -> FloatArray:
         """
         Return the column vector of a 2×3 affine matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Column vector with shape (6, 1).
         """
         return super().column_vector
 
     @property
-    def row_vector(self) -> np.ndarray:
+    def row_vector(self) -> FloatArray:
         """
         Return the row vector of a 2×3 affine matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Row vector with shape (1, 6).
         """
         return super().row_vector
@@ -49,13 +50,13 @@ class AffineTransformMixin(PerspectiveTransformMixin):
         return super().shape
 
     @property
-    def flatten(self) -> np.ndarray:
+    def flatten(self) -> FloatArray:
         """
         Return the flattened affine matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             One-dimensional array with shape (6,).
         """
         return super().flatten

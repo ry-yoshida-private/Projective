@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass
 
+from ...types import FloatArray
 from ..matrix import PerspectiveMatrix
 from ..method import PerspectiveTransformationMethod
 from .mixin import (
@@ -24,7 +25,7 @@ class AffineMatrix(
 
     Attributes:
     ----------
-    value: np.ndarray
+    value: FloatArray
         The affine transformation matrix with shape (2, 3).
     """
 
@@ -40,19 +41,19 @@ class AffineMatrix(
             raise ValueError(f"Affine matrix must be a 2x3 matrix, got shape {self.value.shape}")
 
     @property
-    def translation(self) -> np.ndarray:
+    def translation(self) -> FloatArray:
         """
         Return the translation vector (tx, ty).
 
         Returns
         -------
-        np.ndarray:
+        FloatArray:
             The translation vector (tx, ty) with shape (2,).
         """
         return self.value[:, 2]
 
     @property
-    def shear(self) -> np.ndarray:
+    def shear(self) -> FloatArray:
         """
         Return shear factors along x and y axes.
 
@@ -62,7 +63,7 @@ class AffineMatrix(
 
         Returns
         -------
-        np.ndarray:
+        FloatArray:
             The shear factors (sx, sy) with shape (2,).
         """
         a, b = self.value[0, :2]

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import cv2
-import numpy as np
 from dataclasses import dataclass
+from typing import cast
 
 from opencv_utility import OpenCVOutlierFilteringFlag
+
+from .types import FloatArray, MaskArray
 
 @dataclass(frozen=True)
 class EssentialMatrix:
@@ -13,10 +15,10 @@ class EssentialMatrix:
 
     Attributes:
     ----------
-    value: np.ndarray
+    value: FloatArray
         The essential matrix with shape (3, 3).
     """
-    value: np.ndarray
+    value: FloatArray
 
     def __post_init__(self) -> None:
         if self.value.shape != (3, 3):
@@ -25,23 +27,23 @@ class EssentialMatrix:
     @classmethod
     def from_points(
         cls,
-        points1: np.ndarray,
-        points2: np.ndarray,
-        intrinsic_matrix: np.ndarray,
+        points1: FloatArray,
+        points2: FloatArray,
+        intrinsic_matrix: FloatArray,
         outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         prob: float = 0.999,
         threshold: float = 1.0,
-    ) -> tuple[EssentialMatrix, np.ndarray]:
+    ) -> tuple[EssentialMatrix, MaskArray]:
         """
         Create an essential matrix from a set of points and an intrinsic matrix.
 
         Parameters
         ----------
-        points1: np.ndarray
+        points1: FloatArray
             Points in the first image.
-        points2: np.ndarray
+        points2: FloatArray
             Points in the second image.
-        intrinsic_matrix: np.ndarray
+        intrinsic_matrix: FloatArray
             Intrinsic matrix.
         outlier_filtering_flag: OpenCVOutlierFilteringFlag
             Robust estimation method passed to ``cv2.findEssentialMat``.
@@ -52,9 +54,9 @@ class EssentialMatrix:
 
         Returns
         -------
-        tuple[EssentialMatrix, np.ndarray]:
+        tuple[EssentialMatrix, MaskArray]:
             - EssentialMatrix: The estimated essential matrix.
-            - np.ndarray: The mask of the estimated essential matrix.
+            - MaskArray: The mask of the estimated essential matrix.
         """
         if points1.shape != points2.shape:
             raise ValueError("Points1 and points2 must have the same shape")
@@ -63,13 +65,16 @@ class EssentialMatrix:
         if intrinsic_matrix.shape != (3, 3):
             raise ValueError("Intrinsic matrix must be a 3x3 matrix")
 
-        E, e_mask = cv2.findEssentialMat(
-            points1=points1,
-            points2=points2,
-            cameraMatrix=intrinsic_matrix,
-            method=outlier_filtering_flag.cv2_flag,
-            prob=prob,
-            threshold=threshold,
+        E, e_mask = cast(
+            tuple[FloatArray, MaskArray],
+            cv2.findEssentialMat(
+                points1=points1,
+                points2=points2,
+                cameraMatrix=intrinsic_matrix,
+                method=outlier_filtering_flag.cv2_flag,
+                prob=prob,
+                threshold=threshold,
+            ),
         )
         return cls(value=E), e_mask
 

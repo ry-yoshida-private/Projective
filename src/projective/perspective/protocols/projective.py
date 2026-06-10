@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import Protocol
 
-import numpy as np
+from ...types import FloatArray
 
 
 class PerspectiveProjectiveProtocol(Protocol):
     """Protocol for projecting 2D points with a perspective matrix."""
 
-    value: np.ndarray
+    value: FloatArray
 
     def projective_transformation(
         self,
-        points: np.ndarray,
+        points: FloatArray,
         is_inverse: bool = False,
         up_axis_index: int = 2,
-    ) -> np.ndarray: ...
+    ) -> FloatArray: ...

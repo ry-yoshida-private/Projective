@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, cast
 
 from opencv_utility import OpenCVOutlierFilteringFlag
 
+from ....types import FloatArray, MaskArray
 from ...mixin.factory import PerspectiveFactoryMixin
 
 if TYPE_CHECKING:
@@ -32,19 +33,19 @@ class AffineFactoryMixin(PerspectiveFactoryMixin):
     @classmethod
     def create_from_points(
         cls,
-        origin_points: np.ndarray,
-        destination_points: np.ndarray,
+        origin_points: FloatArray,
+        destination_points: FloatArray,
         outlier_filtering_flag: OpenCVOutlierFilteringFlag = OpenCVOutlierFilteringFlag.RANSAC,
         ransac_th: float = 3.0,
-    ) -> tuple[AffineMatrix, np.ndarray]:
+    ) -> tuple[AffineMatrix, MaskArray]:
         """
         Create a partial affine matrix (``cv2.estimateAffinePartial2D``) from point correspondences.
 
         Parameters
         ----------
-        origin_points : np.ndarray
+        origin_points : FloatArray
             Origin points (n, 2).
-        destination_points : np.ndarray
+        destination_points : FloatArray
             Destination points (n, 2).
         outlier_filtering_flag: OpenCVOutlierFilteringFlag
             Outlier filtering flag.
@@ -53,7 +54,7 @@ class AffineFactoryMixin(PerspectiveFactoryMixin):
 
         Returns
         -------
-        tuple[AffineMatrix, np.ndarray]
+        tuple[AffineMatrix, MaskArray]
             Affine matrix and inlier mask of shape (N, 1).
         """
         if not cls._validate_points(origin_points, destination_points):
@@ -63,7 +64,7 @@ class AffineFactoryMixin(PerspectiveFactoryMixin):
         destination_points = np.asarray(destination_points, dtype=np.float32)
 
         matrix, mask = cast(
-            tuple[np.ndarray, np.ndarray],
+            tuple[FloatArray, MaskArray],
             cv2.estimateAffinePartial2D(
                 from_=origin_points,
                 to=destination_points,

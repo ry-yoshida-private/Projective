@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Protocol
 
-import numpy as np
+from ....types import FloatArray
 
 
 class AffineMatrixValueProtocol(Protocol):
     """Protocol for affine matrix instances."""
 
-    value: np.ndarray
+    value: FloatArray

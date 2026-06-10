@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 from typing import Callable
 
+from ....types import FloatArray
 from ...mixin.projective import PerspectiveProjectiveMixin
 from ..protocols.inverse import HomographyInverseProtocol
 
@@ -10,20 +11,20 @@ from ..protocols.inverse import HomographyInverseProtocol
 class HomographyProjectiveMixin(PerspectiveProjectiveMixin):
     """Project 2D points with a homography matrix."""
 
-    value: np.ndarray
+    value: FloatArray
 
     def projective_transformation(
         self: HomographyInverseProtocol,
-        points: np.ndarray,
+        points: FloatArray,
         is_inverse: bool = False,
         up_axis_index: int = 2,
-    ) -> np.ndarray:
+    ) -> FloatArray:
         """
         Apply the homography to 2D points.
 
         Parameters
         ----------
-        points : np.ndarray
+        points : FloatArray
             Input points of shape (N, 2) or (N, 3).
             (x, y) rows are promoted to homogeneous (x, y, 1) unless already (N, 3).
         is_inverse : bool
@@ -33,7 +34,7 @@ class HomographyProjectiveMixin(PerspectiveProjectiveMixin):
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Projected points of shape (N, 2).
         """
         if up_axis_index not in (0, 1, 2):
@@ -53,7 +54,7 @@ class HomographyProjectiveMixin(PerspectiveProjectiveMixin):
         matrix = self.inverse if is_inverse else self.value
         transformed = (matrix @ points.T).T
 
-        numerator_getters: dict[int, Callable[[np.ndarray], np.ndarray]] = {
+        numerator_getters: dict[int, Callable[[FloatArray], FloatArray]] = {
             0: lambda arr: arr[:, 1:],
             1: lambda arr: arr[:, (0, 2)],
             2: lambda arr: arr[:, :2],

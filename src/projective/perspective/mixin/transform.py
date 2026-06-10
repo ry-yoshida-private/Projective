@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import numpy as np
 from abc import ABC, abstractmethod
 
 from typing import TYPE_CHECKING
+
+from ...types import FloatArray
 
 if TYPE_CHECKING:
     from ..matrix import PerspectiveMatrix
@@ -12,28 +13,28 @@ if TYPE_CHECKING:
 class PerspectiveTransformMixin(ABC):
     """Transform the matrix container itself (not external point coordinates)."""
 
-    value: np.ndarray
+    value: FloatArray
 
     @property
-    def column_vector(self) -> np.ndarray:
+    def column_vector(self) -> FloatArray:
         """
         Return the column vector of the matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Column vector with shape (value.size, 1).
         """
         return self.value.reshape(-1, 1)
 
     @property
-    def row_vector(self) -> np.ndarray:
+    def row_vector(self) -> FloatArray:
         """
         Return the row vector of the matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             Row vector with shape (1, value.size).
         """
         return self.value.reshape(1, -1)
@@ -51,13 +52,13 @@ class PerspectiveTransformMixin(ABC):
         return self.value.shape
 
     @property
-    def flatten(self) -> np.ndarray:
+    def flatten(self) -> FloatArray:
         """
         Return the flattened matrix.
 
         Returns
         -------
-        np.ndarray
+        FloatArray
             One-dimensional view with shape (value.size,).
         """
         return self.value.flatten()
